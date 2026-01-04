@@ -105,16 +105,46 @@ h2 { text-align:center; font-weight:600; letter-spacing:1px; margin-bottom:20px;
 #summary p:last-child { font-weight:bold; font-size:18px; }
 
 #checkoutBtn {
-  padding:8px 15px;
-  background-color:#28a745;
-  color:white;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:14px;
+  padding: 12px 25px;
+  background-color: #28a745; /* 平常是安全綠色 */
+  color: white;
+  border: none;
+  border-radius: 50px;       /* 膠囊狀更可愛 */
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                 /* 文字與狗掌的間距 */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 彈跳過渡效果 */
 }
 
-#checkoutBtn:hover { background-color:#218838; }
+/* 在按鈕文字前面加上狗掌圖示 */
+#checkoutBtn::before {
+  content: "🐾"; 
+  font-size: 20px;
+  transition: transform 0.4s;
+}
+
+/* 老師要求的交互反饋：鮮明對比 + 狗掌旋轉 */
+#checkoutBtn:hover {
+  background-color: #ff6f61; /* 變成鮮豔的珊瑚色 */
+  transform: scale(1.05);    /* 按鈕稍微放大 */
+  box-shadow: 0 8px 15px rgba(255, 111, 97, 0.3);
+}
+
+/* 滑鼠移上去時，讓狗掌動起來 */
+#checkoutBtn:hover::before {
+  transform: rotate(-20deg) scale(1.2); /* 狗掌旋轉並放大 */
+}
+
+/* 點擊時的視覺反饋 */
+#checkoutBtn:active {
+  transform: scale(0.95);
+}
+
 
 #emptyCart { text-align:center; font-size:18px; color:#888; display:none; }
 
