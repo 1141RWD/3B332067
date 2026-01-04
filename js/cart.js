@@ -27,7 +27,10 @@ function renderCart() {
     itemDiv.innerHTML = `
       <img src="${item.image}" alt="${item.name}">
       <div class="cart-info">
-        <span class="item-name">${item.name}${item.size ? ` (${item.size})` : ""}</span>
+        <div class="item-detail-text">
+          <span class="item-name">${item.name}${item.size ? ` (${item.size})` : ""}</span>
+          <div class="item-unit-price" style="color: #666; font-size: 0.9em; margin-top: 4px;">單價: NT$ ${price}</div>
+        </div>
         <div class="qty">
           <button onclick="changeQty(${index}, -1)">−</button>
           <span>${qty}</span>
@@ -68,25 +71,34 @@ function saveCart() {
   renderCart();
 }
 
+// 結帳功能：修正訊息跳出的金額與折扣邏輯
 document.getElementById("checkoutBtn").onclick = () => {
-  if (cart.length === 0) { alert("購物車目前沒有商品！"); return; }
+  if (cart.length === 0) { 
+    alert("購物車目前沒有商品！"); 
+    return; 
+  }
 
-  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalAmount = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+  // 重新計算目前的金額與折扣，確保彈窗金額與畫面顯示的 $6064 一致
+  const subtotal = cart.reduce((sum, item) => sum + (item.qty * (parseInt(item.price) || 0)), 0);
+  const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 0), 0);
+  const discount = subtotal >= 1000 ? 100 : 0; 
+  const totalAmount = subtotal - discount; 
+
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
+  // 彈窗顯示正確的 totalAmount
   if (confirm(`請確認商品無誤\n總數量: ${totalQty}\n總金額: NT$ ${totalAmount}`)) {
     if (currentUser) {
       alert(`${currentUser.avatar} ${currentUser.name}，結帳成功！\n感謝購買。`);
     } else {
       alert("結帳成功！感謝購買。");
     }
+    
     // 清空購物車
     cart = [];
     saveCart();
 
-    // 自動登出使用者
-    localStorage.removeItem("currentUser");
+    // 結帳後自動返回首頁
     location.href = "index.html";
   }
 };
